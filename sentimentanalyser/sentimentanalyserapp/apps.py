@@ -8,7 +8,7 @@ from numpy import vectorize
 class SentimentanalyserappConfig(AppConfig):
     # default_auto_field = 'django.db.models.BigAutoField'
     # name = 'sentimentanalyserapp'
-    path = os.path.join(settings.MODELS, 'models.pkl')
+    path = os.path.join(settings.MODELS, 'models.p')
 
     with open(path, 'rb') as pickled:
         data = pickle.load(pickled)
