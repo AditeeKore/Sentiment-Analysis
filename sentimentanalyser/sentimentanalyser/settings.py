@@ -28,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-MODELS = os.path.join(BASE_DIR, 'sentiementanalyserapp\\models')
+MODELS = os.path.join(BASE_DIR, 'sentiementanalyserapp\models')
 # Application definition
 
 INSTALLED_APPS = [
