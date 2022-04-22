@@ -1,4 +1,4 @@
-import imp
+import joblib
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -6,28 +6,49 @@ import plotly.express as px
 import numpy as np
 
 
+path = 'C:/Users/Aditee/OneDrive/Documents/GitHub/Sentiment-Analysis/sentimentanalyser/models.p'
+with open(path, 'rb') as joblibmodel:
+    data = joblib.load(joblibmodel)
+model = data['model']
+vectorizer = data['vectorizer']
 
-st.title('Sentiment Analysis for Social Media')
+userinputtext = st.text_area('Enter your text', key='name', height=15)
+
+test_feature = vectorizer.transform([userinputtext])
+
+
+if st.button('Analyse'):
+    if len(userinputtext) > 0:
+        ans= model.predict(test_feature)
+        st.markdown(ans)
+    else:
+        st.text('Invalid input')
+
+st.title('Sentiment Analysis using ML')
 st.markdown('This application is about analysing sentiments of texts.')
 
 st.sidebar.title('Sentiment Analysis')
 
-data = pd.read_csv('Tweets.csv')
+st.sidebar.subheader('Actions')
+
+uploaded_file = st.sidebar.file_uploader("Upload your input CSV file", type=["csv"])
+data = pd.read_csv(uploaded_file, usecols=['content'])
 
 if st.checkbox('Show Data'):
     st.write(data.head(8))
 
-st.sidebar.subheader('Actions')
-sentiment = st.sidebar.radio('Sentiment Type', ('positive', 'negative', 'neutral'))
-st.write(data.query('airline_sentiment==@sentiment')[['text']].sample(1).iat[0,0])
-st.write(data.query('airline_sentiment==@sentiment')[['text']].sample(1).iat[0,0])
-st.write(data.query('airline_sentiment==@sentiment')[['text']].sample(1).iat[0,0])
+test_file = vectorizer.transform(data["content"])
+csv_prediction = model.predict(test_file)
+df_csv= pd.DataFrame({'Head':csv_prediction})
 
-select=st.sidebar.selectbox('Visualisation of Data',['Histogram', 'Pir Chart'], key=1)
+st.write(csv_prediction)
 
-sentiment_visualise = data['airline_sentiment'].value_counts()
+
+select=st.sidebar.selectbox('Visualisation of Data',['Histogram', 'Pie Chart'], key=1)
+
+sentiment_visualise = df_csv['Head'].value_counts()
 sentiment_visualise = pd.DataFrame({'Sentiment':sentiment_visualise.index,'Text':sentiment_visualise})
-st.markdown('### Sentiment count')
+# st.markdown('### Sentiment count')
 
 if select == 'Histogram':
     fig = px.bar(sentiment_visualise, x='Sentiment', y='Text', color='Text', height=500)
@@ -35,3 +56,4 @@ if select == 'Histogram':
 else:
     fig = px.pie(sentiment_visualise, values='Text', names='Sentiment')
     st.plotly_chart(fig)
+
