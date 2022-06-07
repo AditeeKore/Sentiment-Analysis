@@ -5,7 +5,7 @@ import plotly.express as px
 
 
 
-path = 'C:/Users/Aditee/OneDrive/Documents/GitHub/Sentiment-Analysis/sentimentanalyser/models.p'
+path = 'C:/Users/Aditee/OneDrive/Documents/GitHub/Sentiment-Analysis/sentimentanalysis/models.p'
 with open(path, 'rb') as joblibmodel:
     data = joblib.load(joblibmodel)
 model = data['model']
